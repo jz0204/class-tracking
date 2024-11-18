@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+motor
+pydantic
+requests
+fastapi-mail
+python-multipart
+jinja2
+aiofiles
+python-multipart
