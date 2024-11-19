@@ -1,10 +1,10 @@
 fastapi
 uvicorn
-motor
-pydantic
-requests
-fastapi-mail
 python-multipart
 jinja2
-aiofiles
-python-multipart
+motor
+google-auth-oauthlib
+google-auth-httplib2
+google-api-python-client
+python-dotenv
+requests
