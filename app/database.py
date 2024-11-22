@@ -15,11 +15,12 @@ class Database:
             if not connection_string:
                 raise ValueError("MONGODB_URI environment variable is not set")
             
-            # Initialize MongoDB client with SSL certificate
+            # Initialize MongoDB client with SSL certificate and specific server API version
             self.client = AsyncIOMotorClient(
                 connection_string,
                 tlsCAFile=certifi.where(),
-                serverSelectionTimeoutMS=5000
+                serverSelectionTimeoutMS=5000,
+                serverApi=None  # Remove explicit server API version
             )
             
             # Access the class_tracking database
