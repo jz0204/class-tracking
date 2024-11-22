@@ -27,15 +27,20 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 nest_asyncio.apply()
 
 # Initialize services with error handling
-try:
-    db = Database()
-    sendgrid_service = SendGridService()
-    email_sender = EmailSender(email_service=sendgrid_service)
-    course_checker = CourseChecker(db, email_sender)
-    print("All services initialized successfully")
-except Exception as e:
-    print(f"Failed to initialize services: {e}")
-    raise
+db = Database()
+
+@app.on_event("startup")
+async def startup_event():
+    try:
+        await db.initialize()
+        global sendgrid_service, email_sender, course_checker
+        sendgrid_service = SendGridService()
+        email_sender = EmailSender(email_service=sendgrid_service)
+        course_checker = CourseChecker(db, email_sender)
+        print("All services initialized successfully")
+    except Exception as e:
+        print(f"Failed to initialize services: {e}")
+        raise
 
 @app.get("/api/healthcheck")
 async def healthcheck():
