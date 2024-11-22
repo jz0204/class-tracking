@@ -100,7 +100,6 @@ async def add_watch(
     try:
         print(f"Received watch request - Subject: {subject}, Course: {course_number}, CRNs: {crns}, Email: {email}")
         
-        # Validate that either (CRNs) or (subject AND course_number) are provided
         if not crns and not (subject and course_number):
             raise HTTPException(
                 status_code=400,
@@ -109,35 +108,32 @@ async def add_watch(
 
         crn_list = [crn.strip() for crn in crns.split(",")] if crns else []
         
-        # Get initial status
-        sections = await get_course_sections(
-            subject=subject,
-            course_number=course_number,
-            crns=crn_list if not (subject and course_number) else None
+        # Set timeout for initial section fetch
+        sections = await asyncio.wait_for(
+            get_course_sections(
+                subject=subject,
+                course_number=course_number,
+                crns=crn_list if not (subject and course_number) else None
+            ),
+            timeout=5.0
         )
-        print(f"Fetched sections: {sections}")
         
-        if sections:
-            email_sent = await email_sender.send_confirmation_email(
-                to=email,
-                sections=sections
-            )
+        if not sections:
+            raise HTTPException(status_code=404, detail="No sections found")
             
-            if email_sent:
-                print(f"Confirmation email sent to {email}")
-            else:
-                print("Failed to send confirmation email")
-            
-            watch_id = await db.add_watch(subject, course_number, crn_list, email)
-            print(f"Added watch with ID: {watch_id}")
-            
-            background_tasks.add_task(course_checker.check_courses)
-            return RedirectResponse(url="/", status_code=303)
-        else:
-            raise HTTPException(
-                status_code=404, 
-                detail="No courses found with the provided information"
-            )
+        # Add watch to database first
+        watch_id = await db.add_watch(subject, course_number, crn_list, email)
+        
+        # Send email in background
+        background_tasks.add_task(email_sender.send_confirmation_email, email, sections)
+        
+        # Schedule course checking in background
+        background_tasks.add_task(course_checker.check_courses)
+        
+        return RedirectResponse(url="/", status_code=303)
+        
+    except asyncio.TimeoutError:
+        raise HTTPException(status_code=504, detail="Request timed out")
     except Exception as e:
         print(f"Error in add_watch: {e}")
         raise HTTPException(status_code=500, detail=str(e))

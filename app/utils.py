@@ -4,6 +4,7 @@ import requests
 import json
 import re
 import aiohttp
+import asyncio
 
 class CourseWatch(BaseModel):
     subject: Optional[str] = None
@@ -16,7 +17,7 @@ class CourseWatch(BaseModel):
 # Your existing get_course_sections function goes here, but make it async
 async def get_course_sections(subject: Optional[str] = None, course_number: Optional[str] = None, crns: Optional[List[str]] = None, term: str = "202511") -> List[Dict]:
     try:
-        # Add timeout for the request
+        # Reduce timeout to fail fast
         async with aiohttp.ClientSession() as session:
             async with session.post(
                 "https://howdy.tamu.edu/api/course-sections",
@@ -32,30 +33,34 @@ async def get_course_sections(subject: Optional[str] = None, course_number: Opti
                     "publicSearch": "Y",
                     **({"subject": subject, "courseNumber": str(course_number)} if subject and course_number else {})
                 },
-                timeout=aiohttp.ClientTimeout(total=3)
+                timeout=aiohttp.ClientTimeout(total=5)  # Reduced timeout
             ) as response:
-                response.raise_for_status()
+                if response.status != 200:
+                    return []
+                    
                 courses = await response.json()
                 
-                # Filter courses based on search criteria
+                # Optimize filtering
                 if crns:
-                    filtered_courses = [c for c in courses if c["SWV_CLASS_SEARCH_CRN"] in crns]
+                    crn_set = set(crns)  # Convert to set for O(1) lookup
+                    filtered_courses = [c for c in courses if c["SWV_CLASS_SEARCH_CRN"] in crn_set]
                 elif subject and course_number:
                     filtered_courses = [
                         c for c in courses 
-                        if (c["SWV_CLASS_SEARCH_SUBJECT"] == subject and 
-                            c["SWV_CLASS_SEARCH_COURSE"] == str(course_number))
+                        if c["SWV_CLASS_SEARCH_SUBJECT"] == subject and 
+                           c["SWV_CLASS_SEARCH_COURSE"] == str(course_number)
                     ]
                 else:
                     return []
 
-                # Use list comprehension with await
-                formatted_courses = []
-                for course in filtered_courses:
-                    formatted = await format_course(course)
-                    if formatted:
-                        formatted_courses.append(formatted)
-                return formatted_courses
+                # Process courses concurrently
+                tasks = [format_course(course) for course in filtered_courses]
+                formatted_courses = await asyncio.gather(*tasks)
+                return [c for c in formatted_courses if c]  # Filter out None values
+                
+    except asyncio.TimeoutError:
+        print("Request timed out")
+        return []
     except Exception as e:
         print(f"Error fetching course sections: {e}")
         return []
