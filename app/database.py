@@ -8,6 +8,7 @@ from bson.objectid import ObjectId
 from pymongo.errors import ServerSelectionTimeoutError
 import backoff  # Add to requirements.txt
 import ssl
+import asyncio
 
 class Database:
     def __init__(self):
@@ -22,25 +23,32 @@ class Database:
                 connection_string,
                 tlsCAFile=certifi.where(),
                 tls=True,
-                maxPoolSize=10,
+                tlsInsecure=True,
+                maxPoolSize=5,
                 minPoolSize=0,
-                serverSelectionTimeoutMS=5000,
-                connectTimeoutMS=5000,
-                socketTimeoutMS=5000,
-                waitQueueTimeoutMS=5000,
-                heartbeatFrequencyMS=2000,
+                serverSelectionTimeoutMS=10000,
+                connectTimeoutMS=10000,
+                socketTimeoutMS=10000,
+                waitQueueTimeoutMS=10000,
                 retryWrites=True,
                 retryReads=True,
-                maxIdleTimeMS=15000,
                 appName='class-tracking'
             )
             
+            asyncio.create_task(self._test_connection())
+            
             self.db = self.client.class_tracking
-            print("Successfully connected to MongoDB Atlas")
             
         except Exception as e:
             logging.error(f"Failed to connect to MongoDB: {str(e)}")
             raise
+
+    async def _test_connection(self):
+        try:
+            await self.client.admin.command('ping')
+            print("Successfully connected to MongoDB Atlas")
+        except Exception as e:
+            logging.error(f"Connection test failed: {str(e)}")
 
     async def add_watch(self, subject, course_number, crns, email):
         try:
@@ -68,13 +76,16 @@ class Database:
 
     @backoff.on_exception(
         backoff.expo,
-        (ServerSelectionTimeoutError, TimeoutError),
-        max_tries=3
+        (ServerSelectionTimeoutError, TimeoutError, ssl.SSLError),
+        max_tries=3,
+        max_time=20,
+        jitter=backoff.full_jitter,
+        giveup=lambda e: isinstance(e, ssl.SSLError) and "alert internal error" not in str(e)
     )
     async def get_all_watches(self):
         try:
             cursor = self.db.watches.find({})
-            return await cursor.to_list(length=None)
+            return await cursor.to_list(length=100)  # Limit to 100 watches per query
         except Exception as e:
             logging.error(f"Failed to get watches: {str(e)}")
             return []

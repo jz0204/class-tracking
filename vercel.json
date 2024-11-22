@@ -13,6 +13,8 @@
         }
     ],
     "env": {
-        "PYTHONPATH": "."
+        "PYTHONPATH": ".",
+        "PYTHONASYNCIODEBUG": "1",
+        "PYTHONOPTIMIZE": "2"
     }
 }
