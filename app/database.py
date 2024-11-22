@@ -35,21 +35,20 @@ class Database:
                 appName='class-tracking'
             )
             
+            asyncio.create_task(self._test_connection())
+            
             self.db = self.client.class_tracking
             
         except Exception as e:
             logging.error(f"Failed to connect to MongoDB: {str(e)}")
             raise
 
-    async def initialize(self):
-        """Initialize database connection"""
+    async def _test_connection(self):
         try:
             await self.client.admin.command('ping')
             print("Successfully connected to MongoDB Atlas")
-            return True
         except Exception as e:
             logging.error(f"Connection test failed: {str(e)}")
-            return False
 
     async def add_watch(self, subject, course_number, crns, email):
         try:
