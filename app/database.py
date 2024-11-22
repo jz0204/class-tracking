@@ -114,4 +114,46 @@ class Database:
             logging.error(f"Connection test failed: {str(e)}")
             return False
 
+    async def add_watch_minimal(self, subject, course_number, crns, email):
+        try:
+            document = {
+                "subject": subject,
+                "course_number": course_number,
+                "crns": crns,
+                "email": email,
+                "course_info": [],
+                "status": "initializing",
+                "created_at": datetime.utcnow()
+            }
+            
+            result = await self.db.watches.insert_one(document)
+            return str(result.inserted_id)
+            
+        except Exception as e:
+            logging.error(f"Failed to add watch: {e}")
+            raise
+
+    async def get_watch_by_id(self, watch_id):
+        try:
+            if isinstance(watch_id, str):
+                watch_id = ObjectId(watch_id)
+            return await self.db.watches.find_one({"_id": watch_id})
+        except Exception as e:
+            logging.error(f"Failed to get watch by ID: {e}")
+            return None
+
+    async def update_watch_status(self, watch_id, status):
+        try:
+            if isinstance(watch_id, str):
+                watch_id = ObjectId(watch_id)
+                
+            await self.db.watches.update_one(
+                {"_id": watch_id},
+                {"$set": {"status": status}}
+            )
+            return True
+        except Exception as e:
+            logging.error(f"Failed to update watch status: {e}")
+            return False
+
 db = Database()

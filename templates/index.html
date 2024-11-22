@@ -68,19 +68,25 @@
         <div class="watches">
             {% for watch in watches %}
             <div class="watch-item">
-                {% if watch.course_info %}
-                    {% for section in watch.course_info %}
-                    <div class="course-info">
-                        <h3>{{ section.Title }}</h3>
-                        <p><strong>CRN:</strong> {{ section.CRN }}</p>
-                        <p><strong>Course:</strong> {{ section.Subject }} {{ section.Course }}-{{ section.Section }}</p>
-                        <p><strong>Instructor:</strong> {{ section.Instructor }}</p>
-                        <p><strong>Status:</strong> <span class="status-{{ section.Status.lower() }}">{{ section.Status }}</span></p>
-                        <p><strong>Location:</strong> {{ section.Location }}</p>
-                    </div>
-                    {% endfor %}
+                {% if watch.status == "initializing" %}
+                    <p>Initializing watch... Please refresh in a few moments.</p>
+                {% elif watch.status == "failed" %}
+                    <p class="error-message">Failed to initialize watch. Please try again.</p>
                 {% else %}
-                    <p>Loading course information...</p>
+                    {% if watch.course_info %}
+                        {% for section in watch.course_info %}
+                        <div class="course-info">
+                            <h3>{{ section.Title }}</h3>
+                            <p><strong>CRN:</strong> {{ section.CRN }}</p>
+                            <p><strong>Course:</strong> {{ section.Subject }} {{ section.Course }}-{{ section.Section }}</p>
+                            <p><strong>Instructor:</strong> {{ section.Instructor }}</p>
+                            <p><strong>Status:</strong> <span class="status-{{ section.Status.lower() }}">{{ section.Status }}</span></p>
+                            <p><strong>Location:</strong> {{ section.Location }}</p>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <p>Loading course information...</p>
+                    {% endif %}
                 {% endif %}
                 <p><strong>Email:</strong> {{ watch.email }}</p>
                 <form action="/delete/{{ watch._id }}" method="POST">

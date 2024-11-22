@@ -13,6 +13,7 @@ from dotenv import load_dotenv
 from .sendgrid_service import SendGridService
 import asyncio
 import nest_asyncio
+from .background_tasks import initialize_watch
 
 load_dotenv()
 app = FastAPI()
@@ -98,8 +99,6 @@ async def add_watch(
     email: str = Form(...)
 ):
     try:
-        print(f"Received watch request - Subject: {subject}, Course: {course_number}, CRNs: {crns}, Email: {email}")
-        
         if not crns and not (subject and course_number):
             raise HTTPException(
                 status_code=400,
@@ -108,32 +107,20 @@ async def add_watch(
 
         crn_list = [crn.strip() for crn in crns.split(",")] if crns else []
         
-        # Set timeout for initial section fetch
-        sections = await asyncio.wait_for(
-            get_course_sections(
-                subject=subject,
-                course_number=course_number,
-                crns=crn_list if not (subject and course_number) else None
-            ),
-            timeout=5.0
+        # Create the watch entry
+        watch_id = await db.add_watch_minimal(subject, course_number, crn_list, email)
+        
+        # Queue the initialization
+        background_tasks.add_task(
+            initialize_watch,
+            watch_id,
+            db,
+            email_sender,
+            get_course_sections
         )
-        
-        if not sections:
-            raise HTTPException(status_code=404, detail="No sections found")
-            
-        # Add watch to database first
-        watch_id = await db.add_watch(subject, course_number, crn_list, email)
-        
-        # Send email in background
-        background_tasks.add_task(email_sender.send_confirmation_email, email, sections)
-        
-        # Schedule course checking in background
-        background_tasks.add_task(course_checker.check_courses)
         
         return RedirectResponse(url="/", status_code=303)
         
-    except asyncio.TimeoutError:
-        raise HTTPException(status_code=504, detail="Request timed out")
     except Exception as e:
         print(f"Error in add_watch: {e}")
         raise HTTPException(status_code=500, detail=str(e))
