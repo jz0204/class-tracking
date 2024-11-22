@@ -2,7 +2,6 @@ from pydantic import BaseModel
 from typing import List, Dict, Optional
 import requests
 import json
-from fastapi_mail import FastMail, MessageSchema, ConnectionConfig
 from bs4 import BeautifulSoup
 import re
 
