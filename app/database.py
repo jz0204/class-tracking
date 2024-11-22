@@ -7,23 +7,21 @@ from dotenv import load_dotenv, find_dotenv
 class Database:
     def __init__(self):
         try:
-            # Try to load from .env file (for local development)
             load_dotenv(find_dotenv())
             
-            # Get MongoDB URI from environment variables
             connection_string = os.getenv('MONGODB_URI')
             if not connection_string:
                 raise ValueError("MONGODB_URI environment variable is not set")
             
-            # Initialize MongoDB client with SSL certificate and specific server API version
             self.client = AsyncIOMotorClient(
                 connection_string,
                 tlsCAFile=certifi.where(),
-                serverSelectionTimeoutMS=5000,
-                serverApi=None  # Remove explicit server API version
+                serverSelectionTimeoutMS=20000,
+                connectTimeoutMS=20000,
+                socketTimeoutMS=20000,
+                tls=True
             )
             
-            # Access the class_tracking database
             self.db = self.client.class_tracking
             print("Successfully connected to MongoDB Atlas")
             

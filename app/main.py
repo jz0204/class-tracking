@@ -12,6 +12,7 @@ from .utils import get_course_sections, format_status_message
 from dotenv import load_dotenv
 from .sendgrid_service import SendGridService
 import asyncio
+import nest_asyncio
 
 load_dotenv()
 app = FastAPI()
@@ -20,15 +21,11 @@ app = FastAPI()
 templates = Jinja2Templates(directory="templates")
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
+# Apply nest_asyncio to allow nested event loops
+nest_asyncio.apply()
+
 # Initialize services with error handling
 try:
-    # Ensure we have an event loop
-    try:
-        loop = asyncio.get_event_loop()
-    except RuntimeError:
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
-        
     db = Database()
     sendgrid_service = SendGridService()
     email_sender = EmailSender(email_service=sendgrid_service)
