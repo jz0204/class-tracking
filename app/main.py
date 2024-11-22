@@ -94,12 +94,20 @@ async def add_watch(
     background_tasks: BackgroundTasks,
     subject: Optional[str] = Form(None),
     course_number: Optional[str] = Form(None),
-    crns: str = Form(...),
+    crns: Optional[str] = Form(None),
     email: str = Form(...)
 ):
     try:
         print(f"Received watch request - Subject: {subject}, Course: {course_number}, CRNs: {crns}, Email: {email}")
-        crn_list = [crn.strip() for crn in crns.split(",") if crn.strip()]
+        
+        # Validate that either (CRNs) or (subject AND course_number) are provided
+        if not crns and not (subject and course_number):
+            raise HTTPException(
+                status_code=400,
+                detail="Must provide either CRNs or both Subject and Course Number"
+            )
+
+        crn_list = [crn.strip() for crn in crns.split(",")] if crns else []
         
         # Get initial status
         sections = await get_course_sections(
@@ -110,7 +118,6 @@ async def add_watch(
         print(f"Fetched sections: {sections}")
         
         if sections:
-            # Changed from send_watch_confirmation to send_confirmation_email
             email_sent = await email_sender.send_confirmation_email(
                 to=email,
                 sections=sections
@@ -121,7 +128,6 @@ async def add_watch(
             else:
                 print("Failed to send confirmation email")
             
-            # Add watch to database with course info
             watch_id = await db.add_watch(subject, course_number, crn_list, email)
             print(f"Added watch with ID: {watch_id}")
             

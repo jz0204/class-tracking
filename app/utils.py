@@ -49,10 +49,39 @@ async def get_course_sections(subject: Optional[str] = None, course_number: Opti
                 else:
                     return []
 
-                return [format_course(course) for course in filtered_courses]
+                # Use list comprehension with await
+                formatted_courses = []
+                for course in filtered_courses:
+                    formatted = await format_course(course)
+                    if formatted:
+                        formatted_courses.append(formatted)
+                return formatted_courses
     except Exception as e:
         print(f"Error fetching course sections: {e}")
         return []
+
+async def format_course(course):
+    try:
+        instructor_info = course["SWV_CLASS_SEARCH_INSTRCTR_JSON"]
+        if instructor_info:
+            instructor_data = json.loads(instructor_info)
+            instructor_name = instructor_data[0]["NAME"] if instructor_data else "No instructor assigned"
+        else:
+            instructor_name = "No instructor assigned"
+            
+        return {
+            "CRN": course["SWV_CLASS_SEARCH_CRN"],
+            "Subject": course["SWV_CLASS_SEARCH_SUBJECT"],
+            "Course": course["SWV_CLASS_SEARCH_COURSE"],
+            "Section": course["SWV_CLASS_SEARCH_SECTION"],
+            "Title": course["SWV_CLASS_SEARCH_TITLE"],
+            "Instructor": instructor_name,
+            "Status": "Open" if course["STUSEAT_OPEN"] == "Y" else "Closed",
+            "Location": course["SWV_CLASS_SEARCH_ATTRIBUTES"]
+        }
+    except Exception as e:
+        print(f"Error formatting course: {e}")
+        return None
 
 async def format_status_message(sections: List[Dict]) -> str:
     message = "Current course status:\n\n"

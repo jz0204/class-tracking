@@ -3,6 +3,8 @@ import certifi
 import logging
 from motor.motor_asyncio import AsyncIOMotorClient
 from dotenv import load_dotenv, find_dotenv
+from datetime import datetime
+from bson.objectid import ObjectId
 
 class Database:
     def __init__(self):
@@ -43,7 +45,8 @@ class Database:
                 "course_number": course_number,
                 "crns": crns,
                 "email": email,
-                "course_info": course_info
+                "course_info": course_info,
+                "created_at": datetime.utcnow()
             }
             
             # Insert into watches collection
@@ -61,7 +64,45 @@ class Database:
             return watches
         except Exception as e:
             logging.error(f"Failed to get watches: {str(e)}")
-            raise
+            return []  # Return empty list instead of raising to prevent complete failure
+
+    async def update_course_info(self, watch_id, course_info):
+        try:
+            # Convert string ID to ObjectId if needed
+            if isinstance(watch_id, str):
+                watch_id = ObjectId(watch_id)
+                
+            result = await self.db.watches.update_one(
+                {"_id": watch_id},
+                {
+                    "$set": {
+                        "course_info": course_info,
+                        "updated_at": datetime.utcnow()
+                    }
+                }
+            )
+            
+            if result.modified_count == 0:
+                logging.warning(f"No watch found with ID {watch_id}")
+                return False
+                
+            return True
+            
+        except Exception as e:
+            logging.error(f"Failed to update course info for watch {watch_id}: {e}")
+            return False
+
+    async def delete_watch(self, watch_id):
+        try:
+            if isinstance(watch_id, str):
+                watch_id = ObjectId(watch_id)
+                
+            result = await self.db.watches.delete_one({"_id": watch_id})
+            return result.deleted_count > 0
+            
+        except Exception as e:
+            logging.error(f"Failed to delete watch {watch_id}: {e}")
+            return False
 
     async def test_connection(self):
         try:
