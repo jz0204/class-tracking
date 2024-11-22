@@ -42,14 +42,49 @@ async def healthcheck():
 @app.get("/")
 async def home(request: Request):
     try:
-        watches = await db.get_all_watches()
-        # Update course info for each watch
-        for watch in watches:
-            sections = await get_course_sections(watch.get('subject'), watch.get('course_number'), watch['crns'])
-            watch['course_info'] = sections
-            print(f"Updated course info for watch: {watch['_id']}")
-            print(f"Course info: {sections}")
-        return templates.TemplateResponse("index.html", {"request": request, "watches": watches})
+        # Add timeout for MongoDB operations
+        watches = await asyncio.wait_for(db.get_all_watches(), timeout=5.0)
+        
+        # Process watches in parallel using asyncio.gather
+        async def process_watch(watch):
+            try:
+                sections = await asyncio.wait_for(
+                    get_course_sections(
+                        watch.get('subject'), 
+                        watch.get('course_number'), 
+                        watch['crns']
+                    ),
+                    timeout=3.0
+                )
+                watch['course_info'] = sections
+                return watch
+            except asyncio.TimeoutError:
+                print(f"Timeout processing watch: {watch['_id']}")
+                watch['course_info'] = []
+                return watch
+            except Exception as e:
+                print(f"Error processing watch: {watch['_id']} - {e}")
+                watch['course_info'] = []
+                return watch
+
+        # Process all watches concurrently
+        if watches:
+            processed_watches = await asyncio.gather(
+                *[process_watch(watch) for watch in watches]
+            )
+        else:
+            processed_watches = []
+
+        return templates.TemplateResponse(
+            "index.html", 
+            {"request": request, "watches": processed_watches}
+        )
+    except asyncio.TimeoutError:
+        print("Database operation timed out")
+        return templates.TemplateResponse(
+            "index.html", 
+            {"request": request, "watches": [], "error": "Operation timed out"}
+        )
     except Exception as e:
         print(f"Error in home route: {e}")
         raise HTTPException(status_code=500, detail=str(e))

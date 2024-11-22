@@ -1,0 +1,134 @@
+"TimeUTC","timestampInMs","requestPath","requestMethod","responseStatusCode","requestId","requestUserAgent","level","environment","branch","vercelCache","type","function","host","deploymentDomain","deploymentId","lambdaDurationInMs","lambdaRegion","lambdaMaxMemoryUsed","lambdaMemorySize","message","projectId","wafAction"
+"2024-11-22 05:08:02",1732252082688,"class-tracking-llv40qozx-joes-projects-b842dc8a.vercel.app/","GET",504,"cle1:cle1::iad1::cl575-1732252072591-8a57f5fa2526","['Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36']","error","production","main","MISS","lambda","/app/main.py","class-tracking-llv40qozx-joes-projects-b842dc8a.vercel.app","class-tracking-llv40qozx-joes-projects-b842dc8a.vercel.app","dpl_8StoHVwWtMUMb1C4yUMSbrHPq4Mg",10000,"iad1",119,1024,"","prj_qZYFGDZBpFoAK4D3PH0dgsQ8qbn3","-"
+"2024-11-22 05:08:02",1732252082572,"class-tracking-llv40qozx-joes-projects-b842dc8a.vercel.app/favicon.png","GET",404,"sfo1::iad1::ngt8j-1732252082479-245b3f314cb0","['Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36']","warning","production","main","MISS","lambda","/app/main.py","class-tracking-llv40qozx-joes-projects-b842dc8a.vercel.app","class-tracking-llv40qozx-joes-projects-b842dc8a.vercel.app","dpl_8StoHVwWtMUMb1C4yUMSbrHPq4Mg",2.17,"iad1",118,1024,"","prj_qZYFGDZBpFoAK4D3PH0dgsQ8qbn3","-"
+"2024-11-22 05:08:00",1732252080273,"class-tracking-llv40qozx-joes-projects-b842dc8a.vercel.app/","GET",504,"sfo1::iad1::jc2k6-1732252067337-3added23d7bd","['Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36']","error","production","main","MISS","lambda","/app/main.py","class-tracking-llv40qozx-joes-projects-b842dc8a.vercel.app","class-tracking-llv40qozx-joes-projects-b842dc8a.vercel.app","dpl_8StoHVwWtMUMb1C4yUMSbrHPq4Mg",10000,"iad1",119,1024,"Successfully connected to MongoDB Atlas
+Successfully connected to MongoDB Atlas
+All services initialized successfully
+using Asynchronous Server Gateway Interface (ASGI)
+","prj_qZYFGDZBpFoAK4D3PH0dgsQ8qbn3","-"
+"2024-11-22 05:07:59",1732252079978,"class-tracking-llv40qozx-joes-projects-b842dc8a.vercel.app/","GET",504,"sfo1::iad1::dn42d-1732252067511-b3a8905a7a7f","['vercel-screenshot/1.0']","error","production","main","MISS","lambda","/app/main.py","class-tracking-llv40qozx-joes-projects-b842dc8a.vercel.app","class-tracking-llv40qozx-joes-projects-b842dc8a.vercel.app","dpl_8StoHVwWtMUMb1C4yUMSbrHPq4Mg",10000,"iad1",119,1024,"Successfully connected to MongoDB Atlas
+Successfully connected to MongoDB Atlas
+All services initialized successfully
+using Asynchronous Server Gateway Interface (ASGI)
+","prj_qZYFGDZBpFoAK4D3PH0dgsQ8qbn3","-"
+"2024-11-22 05:07:59",1732252079912,"class-tracking-llv40qozx-joes-projects-b842dc8a.vercel.app/","GET",504,"sfo1::iad1::rfgrt-1732252067076-fd0769723e15","['Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36']","error","production","main","MISS","lambda","/app/main.py","class-tracking-llv40qozx-joes-projects-b842dc8a.vercel.app","class-tracking-llv40qozx-joes-projects-b842dc8a.vercel.app","dpl_8StoHVwWtMUMb1C4yUMSbrHPq4Mg",10000,"iad1",119,1024,"Successfully connected to MongoDB Atlas
+Successfully connected to MongoDB Atlas
+All services initialized successfully
+using Asynchronous Server Gateway Interface (ASGI)
+","prj_qZYFGDZBpFoAK4D3PH0dgsQ8qbn3","-"
+"2024-11-22 05:07:59",1732252079782,"class-tracking-llv40qozx-joes-projects-b842dc8a.vercel.app/","GET",504,"sfo1::iad1::mn92r-1732252067416-1b9f9586cd9c","['vercel-screenshot/1.0']","error","production","main","MISS","lambda","/app/main.py","class-tracking-llv40qozx-joes-projects-b842dc8a.vercel.app","class-tracking-llv40qozx-joes-projects-b842dc8a.vercel.app","dpl_8StoHVwWtMUMb1C4yUMSbrHPq4Mg",10000,"iad1",119,1024,"Successfully connected to MongoDB Atlas
+Successfully connected to MongoDB Atlas
+All services initialized successfully
+using Asynchronous Server Gateway Interface (ASGI)
+","prj_qZYFGDZBpFoAK4D3PH0dgsQ8qbn3","-"
+"2024-11-22 05:07:59",1732252079602,"class-tracking-llv40qozx-joes-projects-b842dc8a.vercel.app/","GET",504,"sfo1::iad1::84qvs-1732252066757-68fb875e2176","['vercel-screenshot/1.0']","error","production","main","MISS","lambda","/app/main.py","class-tracking-llv40qozx-joes-projects-b842dc8a.vercel.app","class-tracking-llv40qozx-joes-projects-b842dc8a.vercel.app","dpl_8StoHVwWtMUMb1C4yUMSbrHPq4Mg",10000,"iad1",119,1024,"Successfully connected to MongoDB Atlas
+Successfully connected to MongoDB Atlas
+All services initialized successfully
+using Asynchronous Server Gateway Interface (ASGI)
+","prj_qZYFGDZBpFoAK4D3PH0dgsQ8qbn3","-"
+"2024-11-22 05:07:59",1732252079308,"class-tracking-llv40qozx-joes-projects-b842dc8a.vercel.app/","GET",504,"sfo1::iad1::m2ssg-1732252066412-7ebe5c6509f5","['vercel-screenshot/1.0']","error","production","main","MISS","lambda","/app/main.py","class-tracking-llv40qozx-joes-projects-b842dc8a.vercel.app","class-tracking-llv40qozx-joes-projects-b842dc8a.vercel.app","dpl_8StoHVwWtMUMb1C4yUMSbrHPq4Mg",10000,"iad1",119,1024,"Successfully connected to MongoDB Atlas
+Successfully connected to MongoDB Atlas
+All services initialized successfully
+using Asynchronous Server Gateway Interface (ASGI)
+","prj_qZYFGDZBpFoAK4D3PH0dgsQ8qbn3","-"
+"2024-11-22 05:07:54",1732252074296,"class-tracking-llv40qozx-joes-projects-b842dc8a.vercel.app/","GET",504,"sfo1::iad1::5lr7z-1732252061401-3b92c5febec1","['vercel-screenshot/1.0']","error","production","main","MISS","lambda","/app/main.py","class-tracking-llv40qozx-joes-projects-b842dc8a.vercel.app","class-tracking-llv40qozx-joes-projects-b842dc8a.vercel.app","dpl_8StoHVwWtMUMb1C4yUMSbrHPq4Mg",10000,"iad1",119,1024,"Successfully connected to MongoDB Atlas
+Successfully connected to MongoDB Atlas
+All services initialized successfully
+using Asynchronous Server Gateway Interface (ASGI)
+","prj_qZYFGDZBpFoAK4D3PH0dgsQ8qbn3","-"
+"2024-11-22 05:07:54",1732252074238,"class-tracking-llv40qozx-joes-projects-b842dc8a.vercel.app/","GET",504,"sfo1::iad1::n6gqj-1732252061477-abd3dccf328a","['vercel-screenshot/1.0']","error","production","main","MISS","lambda","/app/main.py","class-tracking-llv40qozx-joes-projects-b842dc8a.vercel.app","class-tracking-llv40qozx-joes-projects-b842dc8a.vercel.app","dpl_8StoHVwWtMUMb1C4yUMSbrHPq4Mg",10000,"iad1",119,1024,"Successfully connected to MongoDB Atlas
+Successfully connected to MongoDB Atlas
+All services initialized successfully
+using Asynchronous Server Gateway Interface (ASGI)
+","prj_qZYFGDZBpFoAK4D3PH0dgsQ8qbn3","-"
+"2024-11-22 05:07:53",1732252073864,"class-tracking-llv40qozx-joes-projects-b842dc8a.vercel.app/favicon.ico","GET",404,"sfo1::iad1::ngt8j-1732252069536-27e7041826fb","['vercel-screenshot/1.0']","warning","production","main","MISS","lambda","/app/main.py","class-tracking-llv40qozx-joes-projects-b842dc8a.vercel.app","class-tracking-llv40qozx-joes-projects-b842dc8a.vercel.app","dpl_8StoHVwWtMUMb1C4yUMSbrHPq4Mg",4247.04,"iad1",118,1024,"Successfully connected to MongoDB Atlas
+Successfully connected to MongoDB Atlas
+All services initialized successfully
+using Asynchronous Server Gateway Interface (ASGI)
+","prj_qZYFGDZBpFoAK4D3PH0dgsQ8qbn3","-"
+"2024-11-22 05:07:53",1732252073735,"class-tracking-llv40qozx-joes-projects-b842dc8a.vercel.app/","GET",504,"sfo1::iad1::8vc5w-1732252060965-89b16f3f3c95","['Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36']","error","production","main","MISS","lambda","/app/main.py","class-tracking-llv40qozx-joes-projects-b842dc8a.vercel.app","class-tracking-llv40qozx-joes-projects-b842dc8a.vercel.app","dpl_8StoHVwWtMUMb1C4yUMSbrHPq4Mg",10000,"iad1",119,1024,"Successfully connected to MongoDB Atlas
+Successfully connected to MongoDB Atlas
+All services initialized successfully
+using Asynchronous Server Gateway Interface (ASGI)
+","prj_qZYFGDZBpFoAK4D3PH0dgsQ8qbn3","-"
+"2024-11-22 05:07:53",1732252073630,"class-tracking-llv40qozx-joes-projects-b842dc8a.vercel.app/","GET",504,"sfo1::iad1::5c6jm-1732252060729-da0f98c754c9","['vercel-screenshot/1.0']","error","production","main","MISS","lambda","/app/main.py","class-tracking-llv40qozx-joes-projects-b842dc8a.vercel.app","class-tracking-llv40qozx-joes-projects-b842dc8a.vercel.app","dpl_8StoHVwWtMUMb1C4yUMSbrHPq4Mg",10000,"iad1",119,1024,"Successfully connected to MongoDB Atlas
+Successfully connected to MongoDB Atlas
+All services initialized successfully
+using Asynchronous Server Gateway Interface (ASGI)
+","prj_qZYFGDZBpFoAK4D3PH0dgsQ8qbn3","-"
+"2024-11-22 05:07:53",1732252073548,"class-tracking-llv40qozx-joes-projects-b842dc8a.vercel.app/favicon.ico","GET",404,"sfo1::iad1::vhkvm-1732252069370-c0e5815c8abf","['vercel-screenshot/1.0']","warning","production","main","MISS","lambda","/app/main.py","class-tracking-llv40qozx-joes-projects-b842dc8a.vercel.app","class-tracking-llv40qozx-joes-projects-b842dc8a.vercel.app","dpl_8StoHVwWtMUMb1C4yUMSbrHPq4Mg",4097.85,"iad1",118,1024,"Successfully connected to MongoDB Atlas
+Successfully connected to MongoDB Atlas
+All services initialized successfully
+using Asynchronous Server Gateway Interface (ASGI)
+","prj_qZYFGDZBpFoAK4D3PH0dgsQ8qbn3","-"
+"2024-11-22 05:07:52",1732252072930,"class-tracking-llv40qozx-joes-projects-b842dc8a.vercel.app/favicon.ico","GET",404,"sfo1::iad1::zqkxf-1732252068669-fd71705ffdfa","['vercel-screenshot/1.0']","warning","production","main","MISS","lambda","/app/main.py","class-tracking-llv40qozx-joes-projects-b842dc8a.vercel.app","class-tracking-llv40qozx-joes-projects-b842dc8a.vercel.app","dpl_8StoHVwWtMUMb1C4yUMSbrHPq4Mg",4180.08,"iad1",118,1024,"Successfully connected to MongoDB Atlas
+Successfully connected to MongoDB Atlas
+All services initialized successfully
+using Asynchronous Server Gateway Interface (ASGI)
+","prj_qZYFGDZBpFoAK4D3PH0dgsQ8qbn3","-"
+"2024-11-22 05:07:52",1732252072413,"class-tracking-llv40qozx-joes-projects-b842dc8a.vercel.app/favicon.ico","GET",404,"sfo1::iad1::7tdpd-1732252068232-666c3c98af8d","['vercel-screenshot/1.0']","warning","production","main","MISS","lambda","/app/main.py","class-tracking-llv40qozx-joes-projects-b842dc8a.vercel.app","class-tracking-llv40qozx-joes-projects-b842dc8a.vercel.app","dpl_8StoHVwWtMUMb1C4yUMSbrHPq4Mg",4097.31,"iad1",118,1024,"Successfully connected to MongoDB Atlas
+Successfully connected to MongoDB Atlas
+All services initialized successfully
+using Asynchronous Server Gateway Interface (ASGI)
+","prj_qZYFGDZBpFoAK4D3PH0dgsQ8qbn3","-"
+"2024-11-22 05:07:50",1732252070461,"class-tracking-llv40qozx-joes-projects-b842dc8a.vercel.app/","GET",504,"sfo1::iad1::jxfth-1732252060358-05587544c5aa","['vercel-screenshot/1.0']","error","production","main","MISS","lambda","/app/main.py","class-tracking-llv40qozx-joes-projects-b842dc8a.vercel.app","class-tracking-llv40qozx-joes-projects-b842dc8a.vercel.app","dpl_8StoHVwWtMUMb1C4yUMSbrHPq4Mg",10000,"iad1",119,1024,"","prj_qZYFGDZBpFoAK4D3PH0dgsQ8qbn3","-"
+"2024-11-22 05:07:49",1732252069392,"class-tracking-llv40qozx-joes-projects-b842dc8a.vercel.app/","GET",504,"sfo1::iad1::v9jqv-1732252056448-90866745ffe2","['vercel-screenshot/1.0']","error","production","main","MISS","lambda","/app/main.py","class-tracking-llv40qozx-joes-projects-b842dc8a.vercel.app","class-tracking-llv40qozx-joes-projects-b842dc8a.vercel.app","dpl_8StoHVwWtMUMb1C4yUMSbrHPq4Mg",10000,"iad1",119,1024,"Successfully connected to MongoDB Atlas
+Successfully connected to MongoDB Atlas
+All services initialized successfully
+using Asynchronous Server Gateway Interface (ASGI)
+","prj_qZYFGDZBpFoAK4D3PH0dgsQ8qbn3","-"
+"2024-11-22 05:07:49",1732252069273,"class-tracking-llv40qozx-joes-projects-b842dc8a.vercel.app/","GET",504,"sfo1::iad1::bthgv-1732252056413-346f4374facc","['vercel-screenshot/1.0']","error","production","main","MISS","lambda","/app/main.py","class-tracking-llv40qozx-joes-projects-b842dc8a.vercel.app","class-tracking-llv40qozx-joes-projects-b842dc8a.vercel.app","dpl_8StoHVwWtMUMb1C4yUMSbrHPq4Mg",10000,"iad1",119,1024,"Successfully connected to MongoDB Atlas
+Successfully connected to MongoDB Atlas
+All services initialized successfully
+using Asynchronous Server Gateway Interface (ASGI)
+","prj_qZYFGDZBpFoAK4D3PH0dgsQ8qbn3","-"
+"2024-11-22 05:07:49",1732252069171,"class-tracking-llv40qozx-joes-projects-b842dc8a.vercel.app/","GET",504,"sfo1::iad1::vhkvm-1732252056378-3e6647dc6a4f","['vercel-screenshot/1.0']","error","production","main","MISS","lambda","/app/main.py","class-tracking-llv40qozx-joes-projects-b842dc8a.vercel.app","class-tracking-llv40qozx-joes-projects-b842dc8a.vercel.app","dpl_8StoHVwWtMUMb1C4yUMSbrHPq4Mg",10000,"iad1",119,1024,"Successfully connected to MongoDB Atlas
+Successfully connected to MongoDB Atlas
+All services initialized successfully
+using Asynchronous Server Gateway Interface (ASGI)
+","prj_qZYFGDZBpFoAK4D3PH0dgsQ8qbn3","-"
+"2024-11-22 05:07:48",1732252068777,"class-tracking-llv40qozx-joes-projects-b842dc8a.vercel.app/","GET",504,"sfo1::iad1::mfhdz-1732252056398-84ae8fe72100","['vercel-screenshot/1.0']","error","production","main","MISS","lambda","/app/main.py","class-tracking-llv40qozx-joes-projects-b842dc8a.vercel.app","class-tracking-llv40qozx-joes-projects-b842dc8a.vercel.app","dpl_8StoHVwWtMUMb1C4yUMSbrHPq4Mg",10000,"iad1",119,1024,"Successfully connected to MongoDB Atlas
+Successfully connected to MongoDB Atlas
+All services initialized successfully
+using Asynchronous Server Gateway Interface (ASGI)
+","prj_qZYFGDZBpFoAK4D3PH0dgsQ8qbn3","-"
+"2024-11-22 05:07:48",1732252068727,"class-tracking-llv40qozx-joes-projects-b842dc8a.vercel.app/","GET",504,"sfo1::iad1::xmwvr-1732252055915-dcd99ae63d85","['Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36']","error","production","main","MISS","lambda","/app/main.py","class-tracking-llv40qozx-joes-projects-b842dc8a.vercel.app","class-tracking-llv40qozx-joes-projects-b842dc8a.vercel.app","dpl_8StoHVwWtMUMb1C4yUMSbrHPq4Mg",10000,"iad1",119,1024,"Successfully connected to MongoDB Atlas
+Successfully connected to MongoDB Atlas
+All services initialized successfully
+using Asynchronous Server Gateway Interface (ASGI)
+","prj_qZYFGDZBpFoAK4D3PH0dgsQ8qbn3","-"
+"2024-11-22 05:07:48",1732252068666,"class-tracking-llv40qozx-joes-projects-b842dc8a.vercel.app/","GET",504,"sfo1::iad1::9k8fn-1732252055841-a177501febf4","['Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36']","error","production","main","MISS","lambda","/app/main.py","class-tracking-llv40qozx-joes-projects-b842dc8a.vercel.app","class-tracking-llv40qozx-joes-projects-b842dc8a.vercel.app","dpl_8StoHVwWtMUMb1C4yUMSbrHPq4Mg",10000,"iad1",119,1024,"Successfully connected to MongoDB Atlas
+Successfully connected to MongoDB Atlas
+All services initialized successfully
+using Asynchronous Server Gateway Interface (ASGI)
+","prj_qZYFGDZBpFoAK4D3PH0dgsQ8qbn3","-"
+"2024-11-22 05:07:48",1732252068509,"class-tracking-llv40qozx-joes-projects-b842dc8a.vercel.app/","GET",504,"sfo1::iad1::rfgrt-1732252055358-54d7d433c031","['vercel-screenshot/1.0']","error","production","main","MISS","lambda","/app/main.py","class-tracking-llv40qozx-joes-projects-b842dc8a.vercel.app","class-tracking-llv40qozx-joes-projects-b842dc8a.vercel.app","dpl_8StoHVwWtMUMb1C4yUMSbrHPq4Mg",10000,"iad1",119,1024,"Successfully connected to MongoDB Atlas
+Successfully connected to MongoDB Atlas
+All services initialized successfully
+using Asynchronous Server Gateway Interface (ASGI)
+","prj_qZYFGDZBpFoAK4D3PH0dgsQ8qbn3","-"
+"2024-11-22 05:07:48",1732252068465,"class-tracking-llv40qozx-joes-projects-b842dc8a.vercel.app/","GET",504,"sfo1::iad1::zqkxf-1732252055534-1e687a388568","['vercel-screenshot/1.0']","error","production","main","MISS","lambda","/app/main.py","class-tracking-llv40qozx-joes-projects-b842dc8a.vercel.app","class-tracking-llv40qozx-joes-projects-b842dc8a.vercel.app","dpl_8StoHVwWtMUMb1C4yUMSbrHPq4Mg",10000,"iad1",119,1024,"Successfully connected to MongoDB Atlas
+Successfully connected to MongoDB Atlas
+All services initialized successfully
+using Asynchronous Server Gateway Interface (ASGI)
+","prj_qZYFGDZBpFoAK4D3PH0dgsQ8qbn3","-"
+"2024-11-22 05:07:48",1732252068440,"class-tracking-llv40qozx-joes-projects-b842dc8a.vercel.app/","GET",504,"sfo1::iad1::fhqdm-1732252055696-4ea5e7f83078","['vercel-screenshot/1.0']","error","production","main","MISS","lambda","/app/main.py","class-tracking-llv40qozx-joes-projects-b842dc8a.vercel.app","class-tracking-llv40qozx-joes-projects-b842dc8a.vercel.app","dpl_8StoHVwWtMUMb1C4yUMSbrHPq4Mg",10000,"iad1",119,1024,"Successfully connected to MongoDB Atlas
+Successfully connected to MongoDB Atlas
+All services initialized successfully
+using Asynchronous Server Gateway Interface (ASGI)
+","prj_qZYFGDZBpFoAK4D3PH0dgsQ8qbn3","-"
+"2024-11-22 05:07:47",1732252067982,"class-tracking-llv40qozx-joes-projects-b842dc8a.vercel.app/","GET",504,"sfo1::iad1::pgx89-1732252055359-6e41208ebb84","['vercel-screenshot/1.0']","error","production","main","MISS","lambda","/app/main.py","class-tracking-llv40qozx-joes-projects-b842dc8a.vercel.app","class-tracking-llv40qozx-joes-projects-b842dc8a.vercel.app","dpl_8StoHVwWtMUMb1C4yUMSbrHPq4Mg",10000,"iad1",119,1024,"Successfully connected to MongoDB Atlas
+Successfully connected to MongoDB Atlas
+All services initialized successfully
+using Asynchronous Server Gateway Interface (ASGI)
+","prj_qZYFGDZBpFoAK4D3PH0dgsQ8qbn3","-"
+"2024-11-22 05:08:07",1732252087765,"class-tracking-llv40qozx-joes-projects-b842dc8a.vercel.app/favicon.ico","GET",404,"cle1::iad1::pqqkn-1732252083691-07a996c8df35","['Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36']","warning","production","main","MISS","lambda","/app/main.py","class-tracking-llv40qozx-joes-projects-b842dc8a.vercel.app","class-tracking-llv40qozx-joes-projects-b842dc8a.vercel.app","dpl_8StoHVwWtMUMb1C4yUMSbrHPq4Mg",4031.51,"iad1",118,1024,"Successfully connected to MongoDB Atlas
+Successfully connected to MongoDB Atlas
+All services initialized successfully
+using Asynchronous Server Gateway Interface (ASGI)
+","prj_qZYFGDZBpFoAK4D3PH0dgsQ8qbn3","-"
+"2024-11-22 05:08:02",1732252082472,"class-tracking-llv40qozx-joes-projects-b842dc8a.vercel.app/favicon.ico","GET",404,"sfo1::iad1::wdnkk-1732252078177-36de94afd3de","['Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36']","warning","production","main","MISS","lambda","/app/main.py","class-tracking-llv40qozx-joes-projects-b842dc8a.vercel.app","class-tracking-llv40qozx-joes-projects-b842dc8a.vercel.app","dpl_8StoHVwWtMUMb1C4yUMSbrHPq4Mg",4208.88,"iad1",118,1024,"Successfully connected to MongoDB Atlas
+Successfully connected to MongoDB Atlas
+All services initialized successfully
+using Asynchronous Server Gateway Interface (ASGI)
+","prj_qZYFGDZBpFoAK4D3PH0dgsQ8qbn3","-"
