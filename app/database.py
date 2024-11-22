@@ -20,11 +20,12 @@ class Database:
             self.client = AsyncIOMotorClient(
                 connection_string,
                 tlsCAFile=certifi.where(),
+       
                 maxPoolSize=50,
                 minPoolSize=5,
-                serverSelectionTimeoutMS=30000,
-                connectTimeoutMS=30000,
-                socketTimeoutMS=30000,
+                serverSelectionTimeoutMS=100000,
+                connectTimeoutMS=100000,
+                socketTimeoutMS=100000,
                 retryWrites=True,
                 retryReads=True,
                 tlsAllowInvalidCertificates=True
