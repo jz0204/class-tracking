@@ -14,6 +14,7 @@ from .sendgrid_service import SendGridService
 import asyncio
 import nest_asyncio
 from .background_tasks import initialize_watch
+import logging
 
 load_dotenv()
 app = FastAPI()
@@ -43,51 +44,64 @@ async def healthcheck():
 @app.get("/")
 async def home(request: Request):
     try:
-        # Add timeout for MongoDB operations
-        watches = await asyncio.wait_for(db.get_all_watches(), timeout=5.0)
+        # Increase timeout and add retry logic
+        watches = await asyncio.wait_for(
+            db.get_all_watches(),
+            timeout=15.0
+        )
         
-        # Process watches in parallel using asyncio.gather
         async def process_watch(watch):
+            """Process a single watch entry"""
             try:
-                sections = await asyncio.wait_for(
-                    get_course_sections(
-                        watch.get('subject'), 
-                        watch.get('course_number'), 
-                        watch['crns']
-                    ),
-                    timeout=3.0
-                )
-                watch['course_info'] = sections
-                return watch
-            except asyncio.TimeoutError:
-                print(f"Timeout processing watch: {watch['_id']}")
-                watch['course_info'] = []
+                if watch.get('status') == 'initializing':
+                    return watch
+                
+                # If no course info, try to fetch it
+                if not watch.get('course_info'):
+                    sections = await get_course_sections(
+                        subject=watch.get('subject'),
+                        course_number=watch.get('course_number'),
+                        crns=watch.get('crns')
+                    )
+                    if sections:
+                        await db.update_course_info(watch['_id'], sections)
+                        watch['course_info'] = sections
                 return watch
             except Exception as e:
-                print(f"Error processing watch: {watch['_id']} - {e}")
-                watch['course_info'] = []
+                logging.error(f"Error processing watch {watch.get('_id')}: {e}")
                 return watch
 
-        # Process all watches concurrently
-        if watches:
-            processed_watches = await asyncio.gather(
-                *[process_watch(watch) for watch in watches]
-            )
-        else:
-            processed_watches = []
+        # Process watches in batches of 5
+        processed_watches = []
+        batch_size = 5
+        
+        for i in range(0, len(watches), batch_size):
+            batch = watches[i:i + batch_size]
+            tasks = [process_watch(watch) for watch in batch]
+            batch_results = await asyncio.gather(*tasks, return_exceptions=True)
+            
+            # Filter out any exceptions and add successful results
+            for result in batch_results:
+                if not isinstance(result, Exception):
+                    processed_watches.append(result)
 
         return templates.TemplateResponse(
-            "index.html", 
+            "index.html",
             {"request": request, "watches": processed_watches}
         )
+        
     except asyncio.TimeoutError:
-        print("Database operation timed out")
+        logging.error("Database operation timed out")
         return templates.TemplateResponse(
-            "index.html", 
-            {"request": request, "watches": [], "error": "Operation timed out"}
+            "index.html",
+            {
+                "request": request,
+                "watches": [],
+                "error": "Service temporarily unavailable. Please try again."
+            }
         )
     except Exception as e:
-        print(f"Error in home route: {e}")
+        logging.error(f"Error in home route: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/watch")
@@ -107,10 +121,13 @@ async def add_watch(
 
         crn_list = [crn.strip() for crn in crns.split(",")] if crns else []
         
-        # Create the watch entry
-        watch_id = await db.add_watch_minimal(subject, course_number, crn_list, email)
+        # Add watch with timeout
+        watch_id = await asyncio.wait_for(
+            db.add_watch_minimal(subject, course_number, crn_list, email),
+            timeout=5.0
+        )
         
-        # Queue the initialization
+        # Queue initialization in background
         background_tasks.add_task(
             initialize_watch,
             watch_id,
@@ -121,8 +138,14 @@ async def add_watch(
         
         return RedirectResponse(url="/", status_code=303)
         
+    except asyncio.TimeoutError:
+        logging.error("Timeout adding watch")
+        raise HTTPException(
+            status_code=503,
+            detail="Service temporarily unavailable. Please try again."
+        )
     except Exception as e:
-        print(f"Error in add_watch: {e}")
+        logging.error(f"Error in add_watch: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/delete/{watch_id}")

@@ -99,28 +99,3 @@ async def format_status_message(sections: List[Dict]) -> str:
         message += f"Status: {section['Status']}\n"
         message += f"Location: {section['Location']}\n\n"
     return message
-
-async def initialize_watch(watch_id: str):
-    try:
-        # Get watch details
-        watch = await db.get_watch_by_id(watch_id)
-        if not watch:
-            return
-        
-        # Fetch initial course data with longer timeout
-        sections = await get_course_sections(
-            subject=watch.get('subject'),
-            course_number=watch.get('course_number'),
-            crns=watch.get('crns')
-        )
-        
-        # Update watch with course info
-        await db.update_course_info(watch_id, sections)
-        
-        # Send confirmation email
-        await email_sender.send_confirmation_email(watch['email'], sections)
-        
-    except Exception as e:
-        logging.error(f"Error initializing watch {watch_id}: {e}")
-        # Update watch status to failed
-        await db.update_watch_status(watch_id, "failed")

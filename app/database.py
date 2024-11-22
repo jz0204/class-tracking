@@ -5,6 +5,8 @@ from motor.motor_asyncio import AsyncIOMotorClient
 from dotenv import load_dotenv, find_dotenv
 from datetime import datetime
 from bson.objectid import ObjectId
+from pymongo.errors import ServerSelectionTimeoutError
+import backoff  # Add to requirements.txt
 
 class Database:
     def __init__(self):
@@ -18,11 +20,11 @@ class Database:
             self.client = AsyncIOMotorClient(
                 connection_string,
                 tlsCAFile=certifi.where(),
-                maxPoolSize=10,
-                minPoolSize=1,
-                serverSelectionTimeoutMS=10000,
-                connectTimeoutMS=10000,
-                socketTimeoutMS=10000,
+                maxPoolSize=50,
+                minPoolSize=5,
+                serverSelectionTimeoutMS=30000,
+                connectTimeoutMS=30000,
+                socketTimeoutMS=30000,
                 retryWrites=True,
                 retryReads=True,
                 tlsAllowInvalidCertificates=True
@@ -59,14 +61,18 @@ class Database:
             logging.error(f"Failed to add watch: {e}")
             raise
 
+    @backoff.on_exception(
+        backoff.expo,
+        (ServerSelectionTimeoutError, TimeoutError),
+        max_tries=3
+    )
     async def get_all_watches(self):
         try:
             cursor = self.db.watches.find({})
-            watches = await cursor.to_list(length=None)
-            return watches
+            return await cursor.to_list(length=None)
         except Exception as e:
             logging.error(f"Failed to get watches: {str(e)}")
-            return []  # Return empty list instead of raising to prevent complete failure
+            return []
 
     async def update_course_info(self, watch_id, course_info):
         try:
