@@ -22,7 +22,9 @@ class Database:
                 retryWrites=True,
                 minPoolSize=0,
                 maxPoolSize=100,
-                tls=True
+                tls=True,
+                tlsAllowInvalidCertificates=True,
+                ssl_cert_reqs=False
             )
             
             self.db = self.client.class_tracking
