@@ -7,6 +7,7 @@ from datetime import datetime
 from bson.objectid import ObjectId
 from pymongo.errors import ServerSelectionTimeoutError
 import backoff  # Add to requirements.txt
+import ssl
 
 class Database:
     def __init__(self):
@@ -21,14 +22,17 @@ class Database:
                 connection_string,
                 tlsCAFile=certifi.where(),
                 tls=True,
-                tlsAllowInvalidCertificates=True,
-                maxPoolSize=50,
-                minPoolSize=5,
-                serverSelectionTimeoutMS=30000,
-                connectTimeoutMS=30000,
-                socketTimeoutMS=30000,
+                maxPoolSize=10,
+                minPoolSize=0,
+                serverSelectionTimeoutMS=5000,
+                connectTimeoutMS=5000,
+                socketTimeoutMS=5000,
+                waitQueueTimeoutMS=5000,
+                heartbeatFrequencyMS=2000,
                 retryWrites=True,
-                retryReads=True
+                retryReads=True,
+                maxIdleTimeMS=15000,
+                appName='class-tracking'
             )
             
             self.db = self.client.class_tracking
@@ -121,6 +125,13 @@ class Database:
             logging.error(f"Connection test failed: {str(e)}")
             return False
 
+    @backoff.on_exception(
+        backoff.expo,
+        (ServerSelectionTimeoutError, TimeoutError),
+        max_tries=5,
+        max_time=30,
+        jitter=backoff.full_jitter
+    )
     async def add_watch_minimal(self, subject, course_number, crns, email):
         try:
             document = {

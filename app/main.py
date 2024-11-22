@@ -121,11 +121,15 @@ async def add_watch(
 
         crn_list = [crn.strip() for crn in crns.split(",")] if crns else []
         
-        # Add watch with timeout
-        watch_id = await asyncio.wait_for(
-            db.add_watch_minimal(subject, course_number, crn_list, email),
-            timeout=5.0
-        )
+        # Increased timeout and added retry logic
+        try:
+            watch_id = await db.add_watch_minimal(subject, course_number, crn_list, email)
+        except Exception as e:
+            logging.error(f"Database operation failed: {e}")
+            raise HTTPException(
+                status_code=503,
+                detail="Unable to process request. Please try again."
+            )
         
         # Queue initialization in background
         background_tasks.add_task(
@@ -138,12 +142,8 @@ async def add_watch(
         
         return RedirectResponse(url="/", status_code=303)
         
-    except asyncio.TimeoutError:
-        logging.error("Timeout adding watch")
-        raise HTTPException(
-            status_code=503,
-            detail="Service temporarily unavailable. Please try again."
-        )
+    except HTTPException:
+        raise
     except Exception as e:
         logging.error(f"Error in add_watch: {e}")
         raise HTTPException(status_code=500, detail=str(e))
