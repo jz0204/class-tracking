@@ -13,12 +13,6 @@ class Database:
             if not connection_string:
                 raise ValueError("MONGODB_URI environment variable is not set")
             
-            # Parse the connection string to add required parameters
-            if "?" in connection_string:
-                connection_string += "&retryWrites=true"
-            else:
-                connection_string += "?retryWrites=true"
-            
             self.client = AsyncIOMotorClient(
                 connection_string,
                 tlsCAFile=certifi.where(),
@@ -63,13 +57,18 @@ class Database:
     async def get_all_watches(self):
         try:
             cursor = self.db.watches.find({})
-            watches = []
-            async for watch in cursor:
-                watch["_id"] = str(watch["_id"])
-                watches.append(watch)
+            watches = await cursor.to_list(length=None)
             return watches
         except Exception as e:
-            logging.error(f"Failed to get watches: {e}")
+            logging.error(f"Failed to get watches: {str(e)}")
             raise
+
+    async def test_connection(self):
+        try:
+            await self.client.admin.command('ping')
+            return True
+        except Exception as e:
+            logging.error(f"Connection test failed: {str(e)}")
+            return False
 
 db = Database()
