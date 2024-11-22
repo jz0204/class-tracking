@@ -1,53 +1,42 @@
-from motor.motor_asyncio import AsyncIOMotorClient
-from typing import List, Dict, Optional
 import os
-from dotenv import load_dotenv, find_dotenv
-from bson import ObjectId
 import certifi
 import logging
+from motor.motor_asyncio import AsyncIOMotorClient
+from dotenv import load_dotenv, find_dotenv
 
 class Database:
     def __init__(self):
         try:
-            # Load environment variables with explicit path
-            env_path = find_dotenv()
-            print(f"Loading .env file from: {env_path}")
-            load_dotenv(env_path)
+            # Try to load from .env file (for local development)
+            load_dotenv(find_dotenv())
             
+            # Get MongoDB URI from environment variables
             connection_string = os.getenv('MONGODB_URI')
-            print(f"Connection string found: {'Yes' if connection_string else 'No'}")
-            
             if not connection_string:
                 raise ValueError("MONGODB_URI environment variable is not set")
             
-            # Configure client based on connection string
-            if 'mongodb+srv://' in connection_string:
-                # Atlas connection (with SSL)
-                self.client = AsyncIOMotorClient(
-                    connection_string,
-                    tlsCAFile=certifi.where(),
-                    serverSelectionTimeoutMS=5000
-                )
-            else:
-                # Local connection (without SSL)
-                self.client = AsyncIOMotorClient(
-                    connection_string,
-                    serverSelectionTimeoutMS=5000
-                )
-                
+            # Initialize MongoDB client with SSL certificate
+            self.client = AsyncIOMotorClient(
+                connection_string,
+                tlsCAFile=certifi.where(),
+                serverSelectionTimeoutMS=5000
+            )
+            
+            # Access the class_tracking database
             self.db = self.client.class_tracking
-            print("Successfully connected to MongoDB")
+            print("Successfully connected to MongoDB Atlas")
+            
         except Exception as e:
             logging.error(f"Failed to connect to MongoDB: {str(e)}")
             raise
 
-    async def add_watch(self, subject: Optional[str], course_number: Optional[str], crns: List[str], email: str) -> str:
+    async def add_watch(self, subject, course_number, crns, email):
         try:
-            # Fetch initial course information
+            # Get initial course info
             from .utils import get_course_sections
             course_info = await get_course_sections(subject, course_number, crns)
-            print(f"Initial course info for new watch: {course_info}")
             
+            # Create document
             document = {
                 "subject": subject,
                 "course_number": course_number,
@@ -56,10 +45,12 @@ class Database:
                 "course_info": course_info
             }
             
+            # Insert into watches collection
             result = await self.db.watches.insert_one(document)
             return str(result.inserted_id)
+            
         except Exception as e:
-            print(f"Failed to add watch: {e}")
+            logging.error(f"Failed to add watch: {e}")
             raise
 
     async def get_all_watches(self):
@@ -68,30 +59,10 @@ class Database:
             watches = []
             async for watch in cursor:
                 watch["_id"] = str(watch["_id"])
-                print(f"Retrieved watch: {watch}")
                 watches.append(watch)
             return watches
         except Exception as e:
-            print(f"Failed to get watches: {e}")
+            logging.error(f"Failed to get watches: {e}")
             raise
-
-    async def delete_watch(self, watch_id: str) -> bool:
-        try:
-            result = await self.db.watches.delete_one({"_id": ObjectId(watch_id)})
-            return result.deleted_count > 0
-        except Exception as e:
-            print(f"Failed to delete watch: {e}")
-            raise
-
-    async def update_course_info(self, watch_id: str, course_info: List[Dict]) -> bool:
-        try:
-            result = await self.db.watches.update_one(
-                {"_id": ObjectId(watch_id)},
-                {"$set": {"course_info": course_info}}
-            )
-            return result.modified_count > 0
-        except Exception as e:
-            print(f"Failed to update course info: {e}")
-            return False
 
 db = Database()
