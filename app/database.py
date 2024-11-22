@@ -15,18 +15,19 @@ class Database:
             
             # Parse the connection string to add required parameters
             if "?" in connection_string:
-                connection_string += "&tlsAllowInvalidCertificates=true&retryWrites=true"
+                connection_string += "&retryWrites=true"
             else:
-                connection_string += "?tlsAllowInvalidCertificates=true&retryWrites=true"
+                connection_string += "?retryWrites=true"
             
             self.client = AsyncIOMotorClient(
                 connection_string,
                 tlsCAFile=certifi.where(),
-                serverSelectionTimeoutMS=10000,  # Increased timeout
-                connectTimeoutMS=10000,          # Increased timeout
-                socketTimeoutMS=10000,           # Increased timeout
-                maxPoolSize=1,                   # Reduced pool size
-                minPoolSize=0
+                serverSelectionTimeoutMS=10000,
+                connectTimeoutMS=10000,
+                socketTimeoutMS=10000,
+                maxPoolSize=1,
+                minPoolSize=0,
+                tlsAllowInvalidCertificates=True
             )
             
             self.db = self.client.class_tracking
