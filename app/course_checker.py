@@ -34,15 +34,24 @@ class CourseChecker:
                         )
                         
                         if previous and previous['Status'] != current['Status']:
+                            print(f"Status change detected for CRN {current['CRN']}")
+                            print(f"Previous status: {previous['Status']}")
+                            print(f"Current status: {current['Status']}")
                             changes.append(current)
                     
                     # If there are changes, notify user and update database
                     if changes:
-                        print(f"Status changes detected for watch {watch['_id']}")
-                        await self.email_sender.send_status_update(watch['email'], changes)
+                        print(f"Sending email to {watch['email']} for changes: {changes}")
+                        try:
+                            await self.email_sender.send_status_update(watch['email'], changes)
+                            print("Email sent successfully")
+                        except Exception as e:
+                            print(f"Failed to send email: {str(e)}")
                         
                         # Update the stored course info
                         await self.db.update_course_info(watch['_id'], current_sections)
+                    else:
+                        print(f"No changes detected for watch {watch['_id']}")
                     
                 except Exception as e:
                     print(f"Error checking courses for watch {watch['_id']}: {e}")

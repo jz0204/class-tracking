@@ -1,71 +1,77 @@
-from .gmail_service import GmailService
+from .sendgrid_service import SendGridService
+import logging
 
 class EmailSender:
-    def __init__(self):
-        try:
-            self.gmail_service = GmailService()
-            print("Email configuration loaded successfully")
-        except Exception as e:
-            print(f"Failed to initialize email configuration: {e}")
-            raise
+    def __init__(self, email_service=None):
+        self.email_service = email_service
 
-    async def send_watch_confirmation(self, email: str, sections: list):
+    async def send_confirmation_email(self, to, sections):
         try:
-            subject = "Course Watch Confirmation - Initial Status"
-            message_content = "Thank you for using TAMU Course Watch!\n\n"
-            message_content += "You have started watching the following courses:\n\n"
+            subject = "Course Watch Confirmation"
+            body = self._create_confirmation_email_body(sections)
             
-            for section in sections:
-                message_content += f"Course: {section['Title']}\n"
-                message_content += f"CRN: {section['CRN']}\n"
-                message_content += f"Subject: {section['Subject']} {section['Course']}-{section['Section']}\n"
-                message_content += f"Instructor: {section['Instructor']}\n"
-                message_content += f"Current Status: {section['Status']}\n"
-                message_content += f"Location: {section['Location']}\n"
-                message_content += "-" * 50 + "\n\n"
+            logging.info(f"Attempting to send confirmation email to {to}")
+            logging.info(f"Email subject: {subject}")
+            logging.info(f"Email body: {body}")
             
-            message_content += "You will receive an email notification when the status of any of these courses changes.\n"
-            message_content += "To stop watching these courses, visit the course watch website.\n\n"
-            message_content += "Best regards,\nTAMU Course Watch"
-
-            success = await self.gmail_service.send_email(
-                to_email=email,
+            success = await self.email_service.send_email(
+                to=to,
                 subject=subject,
-                content=message_content
+                body=body
             )
             
             if success:
-                print(f"Watch confirmation email sent to {email}")
-            return success
+                logging.info(f"Confirmation email sent successfully to {to}")
+                return True
+            else:
+                logging.error(f"Failed to send confirmation email to {to}")
+                return False
+                
         except Exception as e:
-            print(f"Failed to send watch confirmation email: {e}")
+            logging.error(f"Exception in send_confirmation_email: {str(e)}")
             return False
 
-    async def send_status_update(self, email: str, changes: list):
-        try:
-            subject = "Course Status Change Alert"
-            message_content = "Course Status Update Alert!\n\n"
-            message_content += "The following courses have changed status:\n\n"
+    def _create_confirmation_email_body(self, sections):
+        body = "You are now watching the following sections:\n\n"
+        
+        for section in sections:
+            body += f"CRN: {section['CRN']}\n"
+            body += f"Course: {section['Subject']} {section['Course']}-{section['Section']}\n"
+            body += f"Title: {section['Title']}\n"
+            body += f"Instructor: {section['Instructor']}\n"
+            body += f"Status: {section['Status']}\n"
+            body += f"Location: {section['Location']}\n\n"
             
-            for change in changes:
-                message_content += f"Course: {change['Title']}\n"
-                message_content += f"CRN: {change['CRN']}\n"
-                message_content += f"Subject: {change['Subject']} {change['Course']}-{change['Section']}\n"
-                message_content += f"New Status: {change['Status']}\n"
-                message_content += "-" * 50 + "\n\n"
-            
-            message_content += "Visit the course watch website to manage your watches.\n\n"
-            message_content += "Best regards,\nTAMU Course Watch"
+        body += "You will receive notifications when the status of any section changes."
+        return body
 
-            success = await self.gmail_service.send_email(
-                to_email=email,
+    async def send_status_change_email(self, to, section, old_status, new_status):
+        try:
+            subject = f"Course Status Change: {section['Subject']} {section['Course']}-{section['Section']}"
+            body = self._create_status_change_email_body(section, old_status, new_status)
+            
+            success = await self.email_service.send_email(
+                to=to,
                 subject=subject,
-                content=message_content
+                body=body
             )
             
             if success:
-                print(f"Status update email sent to {email}")
-            return success
+                logging.info(f"Status change email sent to {to}")
+                return True
+            else:
+                logging.error("Failed to send status change email")
+                return False
+                
         except Exception as e:
-            print(f"Failed to send status update email: {e}")
+            logging.error(f"Failed to send status change email: {str(e)}")
             return False
+
+    def _create_status_change_email_body(self, section, old_status, new_status):
+        body = f"The status of the following section has changed from {old_status} to {new_status}:\n\n"
+        body += f"CRN: {section['CRN']}\n"
+        body += f"Course: {section['Subject']} {section['Course']}-{section['Section']}\n"
+        body += f"Title: {section['Title']}\n"
+        body += f"Instructor: {section['Instructor']}\n"
+        body += f"Location: {section['Location']}\n"
+        return body

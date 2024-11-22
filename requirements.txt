@@ -3,8 +3,7 @@ uvicorn
 python-multipart
 jinja2
 motor
-google-auth-oauthlib
-google-auth-httplib2
-google-api-python-client
 python-dotenv
 requests
+sendgrid==6.9.7
+certifi==2024.2.2

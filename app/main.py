@@ -9,8 +9,12 @@ from .database import Database
 from .course_checker import CourseChecker
 from .email_sender import EmailSender
 from .utils import get_course_sections, format_status_message
+from dotenv import load_dotenv
+from .sendgrid_service import SendGridService
 
+load_dotenv()
 app = FastAPI()
+
 
 # Configure templates directory
 if os.getenv('VERCEL'):
@@ -25,7 +29,8 @@ else:
 # Initialize services with error handling
 try:
     db = Database()
-    email_sender = EmailSender()
+    sendgrid_service = SendGridService()
+    email_sender = EmailSender(email_service=sendgrid_service)
     course_checker = CourseChecker(db, email_sender)
     print("All services initialized successfully")
 except Exception as e:
@@ -72,8 +77,12 @@ async def add_watch(
         print(f"Fetched sections: {sections}")
         
         if sections:
-            # Send confirmation email with initial status
-            email_sent = await email_sender.send_watch_confirmation(email, sections)
+            # Changed from send_watch_confirmation to send_confirmation_email
+            email_sent = await email_sender.send_confirmation_email(
+                to=email,
+                sections=sections
+            )
+            
             if email_sent:
                 print(f"Confirmation email sent to {email}")
             else:

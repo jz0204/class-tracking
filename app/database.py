@@ -1,23 +1,44 @@
 from motor.motor_asyncio import AsyncIOMotorClient
 from typing import List, Dict, Optional
 import os
-from dotenv import load_dotenv
+from dotenv import load_dotenv, find_dotenv
 from bson import ObjectId
+import certifi
+import logging
 
 class Database:
     def __init__(self):
-        load_dotenv()
         try:
-            # Use MongoDB Atlas connection string for production
-            mongodb_url = os.getenv("MONGODB_URL")
-            if not mongodb_url:
-                raise ValueError("MONGODB_URL environment variable not set")
+            # Load environment variables with explicit path
+            env_path = find_dotenv()
+            print(f"Loading .env file from: {env_path}")
+            load_dotenv(env_path)
             
-            self.client = AsyncIOMotorClient(mongodb_url)
-            self.db = self.client.course_watch
+            connection_string = os.getenv('MONGODB_URI')
+            print(f"Connection string found: {'Yes' if connection_string else 'No'}")
+            
+            if not connection_string:
+                raise ValueError("MONGODB_URI environment variable is not set")
+            
+            # Configure client based on connection string
+            if 'mongodb+srv://' in connection_string:
+                # Atlas connection (with SSL)
+                self.client = AsyncIOMotorClient(
+                    connection_string,
+                    tlsCAFile=certifi.where(),
+                    serverSelectionTimeoutMS=5000
+                )
+            else:
+                # Local connection (without SSL)
+                self.client = AsyncIOMotorClient(
+                    connection_string,
+                    serverSelectionTimeoutMS=5000
+                )
+                
+            self.db = self.client.class_tracking
             print("Successfully connected to MongoDB")
         except Exception as e:
-            print(f"Failed to connect to MongoDB: {e}")
+            logging.error(f"Failed to connect to MongoDB: {str(e)}")
             raise
 
     async def add_watch(self, subject: Optional[str], course_number: Optional[str], crns: List[str], email: str) -> str:
