@@ -23,7 +23,8 @@ class Database:
                 minPoolSize=0,
                 maxPoolSize=100,
                 tls=True,
-                tlsAllowInvalidCertificates=True
+                tlsAllowInvalidCertificates=True,
+                tlsInsecure=True
             )
             
             self.db = self.client.class_tracking
