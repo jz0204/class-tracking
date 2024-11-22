@@ -2,7 +2,6 @@ from pydantic import BaseModel
 from typing import List, Dict, Optional
 import requests
 import json
-from bs4 import BeautifulSoup
 import re
 
 class CourseWatch(BaseModel):
