@@ -13,18 +13,20 @@ class Database:
             if not connection_string:
                 raise ValueError("MONGODB_URI environment variable is not set")
             
+            # Parse the connection string to add required parameters
+            if "?" in connection_string:
+                connection_string += "&tlsAllowInvalidCertificates=true&retryWrites=true"
+            else:
+                connection_string += "?tlsAllowInvalidCertificates=true&retryWrites=true"
+            
             self.client = AsyncIOMotorClient(
                 connection_string,
                 tlsCAFile=certifi.where(),
-                serverSelectionTimeoutMS=5000,
-                connectTimeoutMS=5000,
-                socketTimeoutMS=5000,
-                retryWrites=True,
-                minPoolSize=0,
-                maxPoolSize=100,
-                tls=True,
-                tlsAllowInvalidCertificates=True,
-                tlsInsecure=True
+                serverSelectionTimeoutMS=10000,  # Increased timeout
+                connectTimeoutMS=10000,          # Increased timeout
+                socketTimeoutMS=10000,           # Increased timeout
+                maxPoolSize=1,                   # Reduced pool size
+                minPoolSize=0
             )
             
             self.db = self.client.class_tracking
