@@ -11,23 +11,24 @@ from .email_sender import EmailSender
 from .utils import get_course_sections, format_status_message
 from dotenv import load_dotenv
 from .sendgrid_service import SendGridService
+import asyncio
 
 load_dotenv()
 app = FastAPI()
 
-
 # Configure templates directory
-if os.getenv('VERCEL'):
-    # Vercel deployment
-    templates = Jinja2Templates(directory="templates")
-    app.mount("/static", StaticFiles(directory="static"), name="static")
-else:
-    # Local development
-    templates = Jinja2Templates(directory="templates")
-    app.mount("/static", StaticFiles(directory="static"), name="static")
+templates = Jinja2Templates(directory="templates")
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 # Initialize services with error handling
 try:
+    # Ensure we have an event loop
+    try:
+        loop = asyncio.get_event_loop()
+    except RuntimeError:
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        
     db = Database()
     sendgrid_service = SendGridService()
     email_sender = EmailSender(email_service=sendgrid_service)
