@@ -65,43 +65,49 @@ async def healthcheck():
 @app.get("/")
 async def home(request: Request):
     try:
-        # Increase timeout and add retry logic
-        watches = await asyncio.wait_for(
-            db.get_all_watches(),
-            timeout=15.0
-        )
+        # Reduce timeout and add more retries
+        for attempt in range(3):  # Try 3 times
+            try:
+                watches = await asyncio.wait_for(
+                    db.get_all_watches(),
+                    timeout=5.0  # Reduced from 15.0
+                )
+                break  # If successful, break the loop
+            except asyncio.TimeoutError:
+                if attempt == 2:  # Last attempt
+                    raise
+                continue
         
         async def process_watch(watch):
-            """Process a single watch entry"""
-            try:
-                if watch.get('status') == 'initializing':
-                    return watch
-                
-                # If no course info, try to fetch it
-                if not watch.get('course_info'):
-                    sections = await get_course_sections(
-                        subject=watch.get('subject'),
-                        course_number=watch.get('course_number'),
-                        crns=watch.get('crns')
+            if watch.get('status') == 'initializing':
+                return watch
+            
+            if not watch.get('course_info'):
+                try:
+                    sections = await asyncio.wait_for(
+                        get_course_sections(
+                            subject=watch.get('subject'),
+                            course_number=watch.get('course_number'),
+                            crns=watch.get('crns')
+                        ),
+                        timeout=5.0
                     )
                     if sections:
                         await db.update_course_info(watch['_id'], sections)
                         watch['course_info'] = sections
-                return watch
-            except Exception as e:
-                logging.error(f"Error processing watch {watch.get('_id')}: {e}")
-                return watch
+                except asyncio.TimeoutError:
+                    logging.warning(f"Timeout fetching course info for watch {watch.get('_id')}")
+            return watch
 
-        # Process watches in batches of 5
+        # Process watches with smaller batch size
         processed_watches = []
-        batch_size = 5
+        batch_size = 3  # Reduced from 5
         
         for i in range(0, len(watches), batch_size):
             batch = watches[i:i + batch_size]
             tasks = [process_watch(watch) for watch in batch]
             batch_results = await asyncio.gather(*tasks, return_exceptions=True)
             
-            # Filter out any exceptions and add successful results
             for result in batch_results:
                 if not isinstance(result, Exception):
                     processed_watches.append(result)
