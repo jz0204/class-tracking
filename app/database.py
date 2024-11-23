@@ -50,3 +50,90 @@ class Database:
         except Exception as e:
             logging.error(f"Failed to get watches: {str(e)}")
             return []
+
+    async def add_watch_minimal(self, subject, course_number, crns, email):
+        """Add a new watch with minimal information"""
+        try:
+            document = {
+                "subject": subject,
+                "course_number": course_number,
+                "crns": crns,
+                "email": email,
+                "status": "initializing",
+                "created_at": datetime.utcnow(),
+                "updated_at": datetime.utcnow()
+            }
+            
+            result = await self.db.watches.insert_one(document)
+            return result.inserted_id
+            
+        except Exception as e:
+            logging.error(f"Failed to add watch: {str(e)}")
+            raise
+
+    async def update_watch_status(self, watch_id, status):
+        """Update the status of a watch"""
+        try:
+            if isinstance(watch_id, str):
+                watch_id = ObjectId(watch_id)
+                
+            result = await self.db.watches.update_one(
+                {"_id": watch_id},
+                {
+                    "$set": {
+                        "status": status,
+                        "updated_at": datetime.utcnow()
+                    }
+                }
+            )
+            return result.modified_count > 0
+            
+        except Exception as e:
+            logging.error(f"Failed to update watch status: {str(e)}")
+            return False
+
+    async def get_watch_by_id(self, watch_id):
+        """Get a watch by its ID"""
+        try:
+            if isinstance(watch_id, str):
+                watch_id = ObjectId(watch_id)
+                
+            return await self.db.watches.find_one({"_id": watch_id})
+            
+        except Exception as e:
+            logging.error(f"Failed to get watch: {str(e)}")
+            return None
+
+    async def update_course_info(self, watch_id, sections):
+        """Update the course information for a watch"""
+        try:
+            if isinstance(watch_id, str):
+                watch_id = ObjectId(watch_id)
+                
+            result = await self.db.watches.update_one(
+                {"_id": watch_id},
+                {
+                    "$set": {
+                        "course_info": sections,
+                        "updated_at": datetime.utcnow()
+                    }
+                }
+            )
+            return result.modified_count > 0
+            
+        except Exception as e:
+            logging.error(f"Failed to update course info: {str(e)}")
+            return False
+
+    async def delete_watch(self, watch_id):
+        """Delete a watch by its ID"""
+        try:
+            if isinstance(watch_id, str):
+                watch_id = ObjectId(watch_id)
+                
+            result = await self.db.watches.delete_one({"_id": watch_id})
+            return result.deleted_count > 0
+            
+        except Exception as e:
+            logging.error(f"Failed to delete watch: {str(e)}")
+            return False
