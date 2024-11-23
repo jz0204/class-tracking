@@ -18,6 +18,11 @@ class Database:
             if not connection_string:
                 raise ValueError("No database connection string found")
             
+            # Clean up the connection string if it contains invalid options
+            if '?' in connection_string:
+                base_uri = connection_string.split('?')[0]
+                connection_string = f"{base_uri}?retryWrites=true&w=majority"
+            
             self.client = AsyncIOMotorClient(
                 connection_string,
                 tlsCAFile=certifi.where(),
