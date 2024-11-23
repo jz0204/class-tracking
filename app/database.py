@@ -13,11 +13,11 @@ class Database:
         try:
             load_dotenv(find_dotenv())
             
-            connection_string = os.getenv('MONGODB_URI')
+            # Railway provides DATABASE_URL, but we'll fallback to MONGODB_URI
+            connection_string = os.getenv('DATABASE_URL') or os.getenv('MONGODB_URI')
             if not connection_string:
-                raise ValueError("MONGODB_URI environment variable is not set")
+                raise ValueError("No database connection string found")
             
-            # Standard MongoDB client configuration
             self.client = AsyncIOMotorClient(
                 connection_string,
                 tlsCAFile=certifi.where(),
