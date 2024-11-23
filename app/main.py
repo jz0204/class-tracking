@@ -15,6 +15,7 @@ import asyncio
 import nest_asyncio
 from .background_tasks import initialize_watch
 import logging
+from datetime import datetime
 
 load_dotenv()
 app = FastAPI()
@@ -39,7 +40,27 @@ except Exception as e:
 
 @app.get("/api/healthcheck")
 async def healthcheck():
-    return {"status": "healthy"}
+    try:
+        # Test database connection
+        await db.client.admin.command('ping')
+        
+        # Test SendGrid connection
+        if not sendgrid_service.sg:
+            raise ValueError("SendGrid not initialized")
+            
+        # All checks passed
+        return {
+            "status": "healthy",
+            "database": "connected",
+            "email_service": "ready",
+            "timestamp": datetime.utcnow().isoformat()
+        }
+    except Exception as e:
+        logging.error(f"Healthcheck failed: {str(e)}")
+        raise HTTPException(
+            status_code=503,
+            detail="Service unavailable"
+        )
 
 @app.get("/")
 async def home(request: Request):
